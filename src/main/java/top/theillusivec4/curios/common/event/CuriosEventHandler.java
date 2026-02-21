@@ -106,6 +106,8 @@ import top.theillusivec4.curios.common.network.server.sync.SPacketSyncStack;
 import top.theillusivec4.curios.common.network.server.sync.SPacketSyncStack.HandlerType;
 import top.theillusivec4.curios.common.util.EquipCurioTrigger;
 import top.theillusivec4.curios.mixin.CuriosImplMixinHooks;
+import static top.theillusivec4.curios.Curios.LOGGER;  
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class CuriosEventHandler {
 
@@ -136,13 +138,13 @@ public class CuriosEventHandler {
                     DropRule rule = curio.getDropRule(slotContext, evt.getSource(),   
                         evt.getLootingLevel(), evt.isRecentlyHit());  
                     if (rule == null) {  
-                        Curios.LOGGER.error("物品 {} 的 ICurio 实现返回了 null DropRule! 类: {}",   
-                            stack.getItem().getRegistryName(),   
+                        LOGGER.error("物品 {} 的 ICurio 实现返回了 null DropRule! 类: {}",   
+                            BuiltInRegistries.ITEM.getKey(stack.getItem()), 
                             curio.getClass().getName());  
                     }  
                     return rule != null ? rule : DropRule.DEFAULT;  
                 } catch (Exception e) {  
-                    Curios.LOGGER.error("处理物品 {} 的 DropRule 时出错", stack.getItem().getRegistryName(), e);  
+                    Curios.LOGGER.error("处理物品 {} 的 DropRule 时出错", BuiltInRegistries.ITEM.getKey(stack.getItem()), e);  
                     return DropRule.DEFAULT;  
                 }  
             }).orElse(DropRule.DEFAULT);
