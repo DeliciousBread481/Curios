@@ -130,10 +130,22 @@ public class CuriosEventHandler {
             dropRuleOverride = override.getB();
           }
         }
-        DropRule dropRule = dropRuleOverride != null ? dropRuleOverride :
-            CuriosApi.getCurio(stack).map(curio -> curio
-                .getDropRule(slotContext, evt.getSource(), evt.getLootingLevel(),
-                    evt.isRecentlyHit())).orElse(DropRule.DEFAULT);
+        DropRule dropRule = dropRuleOverride != null ? dropRuleOverride :  
+            CuriosApi.getCurio(stack).map(curio -> {  
+            try {  
+                DropRule rule = curio.getDropRule(slotContext, evt.getSource(),   
+                    evt.getLootingLevel(), evt.isRecentlyHit());  
+                if (rule == null) {  
+                Curios.LOGGER.error("物品 {} 的 ICurio 实现返回了 null DropRule! 类: {}",   
+                    stack.getItem().getRegistryName(),   
+                    curio.getClass().getName());  
+                }  
+                return rule != null ? rule : DropRule.DEFAULT;  
+            } catch (Exception e) {  
+                Curios.LOGGER.error("处理物品 {} 的 DropRule 时出错", stack.getItem().getRegistryName(), e);  
+                return DropRule.DEFAULT;  
+            }  
+            }).orElse(DropRule.DEFAULT);
 
         if (dropRule == DropRule.DEFAULT) {
           dropRule = CuriosApi.getSlot(identifier, livingEntity.level()).map(ISlotType::getDropRule)
