@@ -144,7 +144,7 @@ public class CuriosEventHandler {
                     }  
                     return rule != null ? rule : DropRule.DEFAULT;  
                 } catch (Exception e) {  
-                    Curios.LOGGER.error("处理物品 {} 的 DropRule 时出错", BuiltInRegistries.ITEM.getKey(stack.getItem()), e);  
+                    LOGGER.error("处理物品 {} 的 DropRule 时出错", BuiltInRegistries.ITEM.getKey(stack.getItem()), e);  
                     return DropRule.DEFAULT;  
                 }  
             }).orElse(DropRule.DEFAULT);
